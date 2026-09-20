@@ -21,6 +21,7 @@ class GeminiClient:
         """
         self._api_key = api_key or config.gemini_api_key
         self._configured = False
+        self._active_key = None
         
         if self._api_key:
             self._configure_api(self._api_key)
@@ -30,6 +31,7 @@ class GeminiClient:
         try:
             genai.configure(api_key=api_key)
             self._configured = True
+            self._active_key = api_key
             logger.info("Gemini API successfully configured.")
         except Exception as e:
             self._configured = False
@@ -56,12 +58,16 @@ class GeminiClient:
         if not active_key:
             logger.error("Attempted to generate content without an API key.")
             raise GeminiClientError("Gemini API key is not configured. Please add it in your .env file or input it in the sidebar.")
-        
-        # If API key changed or not yet configured, configure it now
-        if api_key_override or not self._configured:
+
+        # Guard against empty or whitespace-only prompts reaching the API
+        if not prompt or not prompt.strip():
+            logger.error("Attempted to generate content with an empty prompt.")
+            raise GeminiClientError("The prompt cannot be empty. Please enter a question or topic first.")
+
+        # (Re)configure the SDK only when the effective API key changes.
+        # An api_key_override is temporary: it never permanently replaces the instance key.
+        if active_key != self._active_key:
             self._configure_api(active_key)
-            if api_key_override:
-                self._api_key = active_key
 
         model_name = config.gemini_model
         logger.debug(f"Calling Gemini model '{model_name}' with prompt length {len(prompt)}")
