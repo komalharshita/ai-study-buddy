@@ -13,8 +13,8 @@ This guide explains how to deploy and run the **AI Learning Buddy** in three dif
 ### Step-by-Step Instructions
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/ai-learning-buddy.git
-   cd ai-learning-buddy
+   git clone https://github.com/komalharshita/ai-study-buddy.git
+   cd ai-study-buddy
    ```
 
 2. **Set Up a Virtual Environment:**

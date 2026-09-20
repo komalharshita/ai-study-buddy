@@ -53,8 +53,8 @@ graph TD
 
 1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/your-username/ai-learning-buddy.git
-    cd ai-learning-buddy
+    git clone https://github.com/komalharshita/ai-study-buddy.git
+    cd ai-study-buddy
     ```
 
 2.  **Create and Activate a Virtual Environment:**
