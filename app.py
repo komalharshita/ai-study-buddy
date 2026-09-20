@@ -188,15 +188,20 @@ with tab_quiz:
                     with open(local_path, "r", encoding="utf-8") as f:
                         quiz_data = json.load(f)
                     
-                    st.session_state.quiz_questions = quiz_data
-                    st.session_state.quiz_user_answers = {}
-                    st.session_state.quiz_submitted = False
-                    st.session_state.quiz_feedback = {}
-                    st.success("Loaded pre-set quiz on 'SQL Joins' successfully!")
+                    if validate_quiz_schema(quiz_data):
+                        st.session_state.quiz_questions = quiz_data
+                        st.session_state.quiz_user_answers = {}
+                        st.session_state.quiz_submitted = False
+                        st.session_state.quiz_feedback = {}
+                        st.success("Loaded pre-set quiz on 'SQL Joins' successfully!")
+                    else:
+                        st.error("The pre-set sample quiz is invalid or missing required fields. Please check the sample data file.")
+                        logger.error("Pre-set sample quiz failed schema validation.")
                 else:
                     st.error("Sample quiz file not found.")
             except Exception as e:
                 st.error(f"Error loading sample quiz: {str(e)}")
+                logger.error(f"Error loading sample quiz: {str(e)}")
                 
     # Generate new quiz via Gemini API
     with col2:

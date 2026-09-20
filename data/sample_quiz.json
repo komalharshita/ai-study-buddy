@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "question": "Which SQL JOIN returns only the rows that have matching values in both tables?",
+    "options": {
+      "A": "LEFT JOIN",
+      "B": "INNER JOIN",
+      "C": "RIGHT JOIN",
+      "D": "FULL OUTER JOIN"
+    },
+    "correct_answer": "B",
+    "explanation": "INNER JOIN returns only the rows where the join condition matches in both tables. Rows without a match in either table are excluded from the result."
+  },
+  {
+    "id": 2,
+    "question": "A LEFT JOIN returns which rows from the left (first) table?",
+    "options": {
+      "A": "Only the rows that have a match in the right table",
+      "B": "No rows at all",
+      "C": "All rows from the left table, even when there is no match in the right table",
+      "D": "Only the rows whose join key is NULL"
+    },
+    "correct_answer": "C",
+    "explanation": "A LEFT JOIN keeps every row from the left table. When no matching row exists in the right table, the right-side columns are filled with NULL."
+  },
+  {
+    "id": 3,
+    "question": "What is the purpose of the ON clause (e.g., ON students.student_id = enrollments.student_id) in a JOIN?",
+    "options": {
+      "A": "It limits how many rows are returned",
+      "B": "It defines the condition that matches rows between the two tables",
+      "C": "It sorts the final result set",
+      "D": "It renames the columns of the result"
+    },
+    "correct_answer": "B",
+    "explanation": "The ON clause specifies the join condition, i.e., how rows in one table relate to rows in the other. Only rows satisfying this condition are paired together."
+  },
+  {
+    "id": 4,
+    "question": "Using the sample tables `students` and `enrollments`, which query lists every student together with their enrollment records?",
+    "options": {
+      "A": "SELECT * FROM students JOIN enrollments;",
+      "B": "SELECT * FROM students LEFT JOIN enrollments ON students.student_id = enrollments.student_id;",
+      "C": "SELECT * FROM enrollments JOIN students ON enrollments.enrollment_id = students.student_id;",
+      "D": "SELECT * FROM students WHERE student_id = enrollments.student_id;"
+    },
+    "correct_answer": "B",
+    "explanation": "A LEFT JOIN on the student_id columns keeps all students and attaches their matching enrollment rows, which is exactly what is needed to list students with their enrollments."
+  },
+  {
+    "id": 5,
+    "question": "Which best describes a FULL OUTER JOIN?",
+    "options": {
+      "A": "It returns only rows present in the left table",
+      "B": "It returns the union of matched rows, plus unmatched rows from both tables with NULLs on the missing side",
+      "C": "It returns the exact same result as an INNER JOIN",
+      "D": "It duplicates all rows in both tables"
+    },
+    "correct_answer": "B",
+    "explanation": "A FULL OUTER JOIN returns every row from both tables. It includes matched pairs and fills unmatched rows from either side with NULL."
+  }
+]
