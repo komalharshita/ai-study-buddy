@@ -72,7 +72,7 @@ if st.sidebar.button("Expose App via ngrok"):
         try:
             from pyngrok import ngrok
             ngrok.set_auth_token(ngrok_auth)
-            public_url = ngrok.connect(8501)
+            public_url = ngrok.connect(config.port)
             st.sidebar.success("Tunnel Active!")
             st.sidebar.code(public_url.public_url, language="text")
             logger.info(f"ngrok tunnel created: {public_url.public_url}")
@@ -310,14 +310,16 @@ with tab_quiz:
                 )
                 
             # Score Overview
-            color = "#27C47A" if score >= 4 else "#FB9B71"
+            total_questions = len(st.session_state.quiz_questions)
+            is_excellent = total_questions > 0 and (score / total_questions) >= 0.8
+            color = "#27C47A" if is_excellent else "#FB9B71"
             st.markdown(
                 f"""
                 <div class="glass-card" style="text-align: center; border-color: {color};">
                     <span style="font-size: 2rem;">🏆</span>
-                    <h3 style="margin: 10px 0 0 0;">Your Quiz Score: <span style="color: {color};">{score} / 5</span></h3>
+                    <h3 style="margin: 10px 0 0 0;">Your Quiz Score: <span style="color: {color};">{score} / {total_questions}</span></h3>
                     <p style="color: #8D8B8B; font-size: 0.95rem; margin-top: 5px;">
-                        {'Excellent job! You have a solid grasp of this topic.' if score >= 4 else 'Keep practicing! Review the explanations above to reinforce your understanding.'}
+                        {'Excellent job! You have a solid grasp of this topic.' if is_excellent else 'Keep practicing! Review the explanations above to reinforce your understanding.'}
                     </p>
                 </div>
                 """,
