@@ -87,3 +87,24 @@ def validate_quiz_schema(quiz_list: List[Dict[str, Any]]) -> bool:
         item["correct_answer"] = ans
 
     return True
+
+def build_quiz_widget_key(quiz_instance_id: str, question_index: int) -> str:
+    """
+    Builds the Streamlit widget key for a single quiz answer control.
+
+    The key must be scoped to the quiz instance. When a widget is created with
+    an explicit ``key``, Streamlit treats that key as the widget's identity and
+    restores the stored value on the next rerun, ignoring ``index``. Scoping by
+    question index alone would therefore reattach the answer controls of a
+    previously loaded quiz, and those stale selections would be graded against
+    the new quiz.
+
+    Args:
+        quiz_instance_id: Identifier of the currently loaded quiz. A new value
+            must be generated whenever a different quiz is loaded.
+        question_index: Zero-based index of the question within the quiz.
+
+    Returns:
+        A widget key unique to this quiz instance and question.
+    """
+    return f"q_{quiz_instance_id}_{question_index}"

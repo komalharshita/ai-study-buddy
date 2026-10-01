@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import json
+import uuid
 from src.config import config
 from src.logger import logger
 from src.core.gemini_client import GeminiClient, GeminiClientError
@@ -13,7 +14,7 @@ from src.ui.components import (
     render_card,
     render_info_box
 )
-from src.utils.helpers import extract_json_from_text, validate_quiz_schema
+from src.utils.helpers import extract_json_from_text, validate_quiz_schema, build_quiz_widget_key
 
 # Initialize Streamlit Page Configuration
 st.set_page_config(
@@ -39,6 +40,12 @@ if "quiz_feedback" not in st.session_state:
     st.session_state.quiz_feedback = {}
 if "last_topic" not in st.session_state:
     st.session_state.last_topic = ""
+
+# Identifies which quiz is currently loaded. Widget keys are scoped with this
+# id so a newly loaded quiz always renders fresh, empty answer controls
+# instead of reusing the previous quiz's selections.
+if "quiz_instance_id" not in st.session_state:
+    st.session_state.quiz_instance_id = ""
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = 0
 
@@ -102,6 +109,7 @@ if topic.strip().lower() != st.session_state.last_topic.lower():
     st.session_state.quiz_user_answers = {}
     st.session_state.quiz_submitted = False
     st.session_state.quiz_feedback = {}
+    st.session_state.quiz_instance_id = ""
     st.session_state.last_topic = topic.strip()
     logger.info(f"Topic changed to: {topic.strip()}")
 
@@ -192,6 +200,7 @@ with tab_quiz:
                     st.session_state.quiz_user_answers = {}
                     st.session_state.quiz_submitted = False
                     st.session_state.quiz_feedback = {}
+                    st.session_state.quiz_instance_id = uuid.uuid4().hex
                     st.success("Loaded pre-set quiz on 'SQL Joins' successfully!")
                 else:
                     st.error("Sample quiz file not found.")
@@ -214,6 +223,7 @@ with tab_quiz:
                         st.session_state.quiz_user_answers = {}
                         st.session_state.quiz_submitted = False
                         st.session_state.quiz_feedback = {}
+                        st.session_state.quiz_instance_id = uuid.uuid4().hex
                         st.success("New quiz generated successfully!")
                     else:
                         st.error("AI response did not match the required JSON quiz format. Please try again.")
@@ -247,7 +257,7 @@ with tab_quiz:
                     f"Select your answer for Q{i+1}:",
                     options=formatted_options,
                     index=default_idx,
-                    key=f"q_{i}",
+                    key=build_quiz_widget_key(st.session_state.quiz_instance_id, i),
                     label_visibility="collapsed"
                 )
                 
@@ -328,6 +338,9 @@ with tab_quiz:
                 st.session_state.quiz_submitted = False
                 st.session_state.quiz_user_answers = {}
                 st.session_state.quiz_feedback = {}
+                # Fresh id => fresh answer controls, so the previous
+                # selections are not silently resubmitted.
+                st.session_state.quiz_instance_id = uuid.uuid4().hex
                 st.rerun()
 
 # --- TAB 4: ASK ANYTHING ---
