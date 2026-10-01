@@ -93,7 +93,9 @@ graph TD
 
 Deploy instantly in a containerized environment using Docker Compose:
 
-1.  Configure the `.env` file in the root folder.
+1.  Configure the `.env` file in the root folder. It is read at **runtime** via
+    `env_file` and is excluded from the image build, so your API key is never
+    stored in an image layer.
 2.  Launch the container:
     ```bash
     docker-compose up --build -d

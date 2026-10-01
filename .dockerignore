@@ -1,0 +1,41 @@
+# Version control and CI
+.git
+.gitignore
+.github
+.devcontainer
+
+# Secrets and local environment - never bake these into an image layer
+.env
+.env.*
+!.env.example
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Test and coverage output
+.coverage
+htmlcov/
+
+# Notebooks and archives are not used by the running app
+notebooks/
+*.zip
+*.tar.gz
+
+# Editor and OS noise
+.vscode/
+.idea/
+.DS_Store
+
+# Keep the sample data used by the app
+!data/
