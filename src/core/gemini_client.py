@@ -67,9 +67,10 @@ class GeminiClient:
         logger.debug(f"Calling Gemini model '{model_name}' with prompt length {len(prompt)}")
         
         # Set up generation config
+        # NOTE: temperature/top_p are intentionally not sent. Recent Gemini
+        # models no longer accept sampling parameters and reject requests that
+        # include them (HTTP 400), so the model defaults are used instead.
         generation_config = {
-            "temperature": 0.7,
-            "top_p": 0.95,
             "max_output_tokens": 2048,
         }
 
@@ -103,6 +104,12 @@ class GeminiClient:
         except exceptions.PermissionDenied as e:
             logger.error(f"Gemini API permission denied: {str(e)}")
             raise GeminiClientError("Authentication failed. Please verify your Gemini API key is correct.")
+        except exceptions.NotFound as e:
+            logger.error(f"Gemini API model not found: {str(e)}")
+            raise GeminiClientError(
+                f"The configured model '{model_name}' was not found or has been retired. "
+                "Update GEMINI_MODEL in your .env file to a currently supported model."
+            )
         except exceptions.GoogleAPICallError as e:
             logger.error(f"General Gemini API call error: {str(e)}")
             raise GeminiClientError(f"Gemini API Error: {str(e)}")

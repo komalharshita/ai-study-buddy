@@ -21,7 +21,7 @@ We apply specific configurations to control response creativity and output limit
 
 | Parameter | Value | Description |
 | :--- | :--- | :--- |
-| **Model** | `gemini-1.5-flash` / `gemini-2.0-flash` | Lightweight, fast, optimized for conversational workflows and JSON output. |
+| **Model** | `gemini-3.5-flash` | Stable, fast, optimized for conversational workflows and JSON output. |
 | **Temperature** | `0.7` | Balances creativity and instruction-following. High enough for rich analogies; low enough to prevent quiz structure breaking. |
 | **Top P** | `0.95` | Controls vocabulary selection diversity. |
 | **Max Output Tokens** | `2048` | Caps response sizes to prevent run-on answers and manage token utilization. |

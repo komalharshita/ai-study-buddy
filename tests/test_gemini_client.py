@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch
+from google.api_core import exceptions
 from src.core.gemini_client import GeminiClient, GeminiClientError
 
 def test_client_init_without_key_raises_error():
@@ -39,3 +40,20 @@ def test_client_generate_api_failure(mock_model_class, mock_configure):
         client.generate("Explain SQL Joins")
         
     assert "unexpected error" in str(exc_info.value)
+
+@patch("google.generativeai.configure")
+@patch("google.generativeai.GenerativeModel")
+def test_client_generate_model_not_found(mock_model_class, mock_configure):
+    """Verify that a retired/unknown model ID surfaces an actionable message."""
+    mock_model_instance = MagicMock()
+    mock_model_instance.generate_content.side_effect = exceptions.NotFound(
+        "models/gemini-1.5-flash is not found for API version v1beta"
+    )
+    mock_model_class.return_value = mock_model_instance
+
+    client = GeminiClient(api_key="mock-api-key")
+    with pytest.raises(GeminiClientError) as exc_info:
+        client.generate("Explain SQL Joins")
+
+    assert "retired" in str(exc_info.value)
+    assert "GEMINI_MODEL" in str(exc_info.value)

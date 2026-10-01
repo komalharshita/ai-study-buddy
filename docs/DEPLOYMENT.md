@@ -41,7 +41,7 @@ This guide explains how to deploy and run the **AI Learning Buddy** in three dif
    * Open `.env` in a text editor and paste your Google Gemini API Key:
      ```env
      GEMINI_API_KEY=AIzaSy...
-     GEMINI_MODEL=gemini-1.5-flash
+     GEMINI_MODEL=gemini-3.5-flash
      ```
 
 5. **Launch the Application:**

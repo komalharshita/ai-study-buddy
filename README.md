@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Docker Support](https://img.shields.io/badge/Docker-Enabled-cyan.svg)](Dockerfile)
 
-An interactive, responsive, AI-powered tutoring application designed to help students master any study topic. Built with Python, Streamlit, and Google Gemini API (`gemini-1.5-flash` or `gemini-2.0-flash`), the application simplifies complex ideas with analogies, tests understanding via interactive quizzes, and allows students to ask follow-up questions in real-time.
+An interactive, responsive, AI-powered tutoring application designed to help students master any study topic. Built with Python, Streamlit, and Google Gemini API (`gemini-3.5-flash`), the application simplifies complex ideas with analogies, tests understanding via interactive quizzes, and allows students to ask follow-up questions in real-time.
 
 ---
 

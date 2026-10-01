@@ -5,7 +5,7 @@ Welcome to the technical design and architectural documentation of the **AI Lear
 ---
 
 ## 1. System Overview
-The **AI Learning Buddy** is a responsive web application designed to act as an automated, interactive tutor for students. Powered by the Google Gemini API (leveraging `gemini-1.5-flash` or `gemini-2.0-flash`), the application takes a student's chosen topic and facilitates concept explanations, provides real-life examples, generates 5-question quizzes, evaluates answers, and supports open-ended follow-up Q&A.
+The **AI Learning Buddy** is a responsive web application designed to act as an automated, interactive tutor for students. Powered by the Google Gemini API (leveraging `gemini-3.5-flash`), the application takes a student's chosen topic and facilitates concept explanations, provides real-life examples, generates 5-question quizzes, evaluates answers, and supports open-ended follow-up Q&A.
 
 ---
 

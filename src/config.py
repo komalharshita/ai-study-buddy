@@ -5,6 +5,10 @@ from src.logger import logger
 # Load environment variables from .env file if it exists
 load_dotenv()
 
+# Current stable Gemini model. Older IDs (gemini-1.5-flash, gemini-2.0-flash)
+# have been retired by Google and now fail with HTTP 404.
+DEFAULT_GEMINI_MODEL = "gemini-3.5-flash"
+
 class Config:
     """Configuration loader and validator for the AI Learning Buddy application."""
     
@@ -14,7 +18,7 @@ class Config:
         self.ngrok_auth_token = os.getenv("NGROK_AUTH_TOKEN", "").strip()
         
         # 2. Model Settings
-        self.gemini_model = os.getenv("GEMINI_MODEL", "gemini-1.5-flash").strip()
+        self.gemini_model = os.getenv("GEMINI_MODEL", DEFAULT_GEMINI_MODEL).strip()
         
         # 3. Server Settings
         self.log_level = os.getenv("LOG_LEVEL", "INFO").strip()
