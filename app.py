@@ -95,15 +95,16 @@ topic = st.text_input(
     help="Type any topic you wish to study with the AI Tutor."
 )
 
-# Reset session states if the study topic changes
-if topic.strip().lower() != st.session_state.last_topic.lower():
+# Reset session states only when the study topic changes in a meaningful way.
+canonical_topic = " ".join(topic.split()).lower()
+if canonical_topic != st.session_state.last_topic:
     st.session_state.chat_history = []
     st.session_state.quiz_questions = None
     st.session_state.quiz_user_answers = {}
     st.session_state.quiz_submitted = False
     st.session_state.quiz_feedback = {}
-    st.session_state.last_topic = topic.strip()
-    logger.info(f"Topic changed to: {topic.strip()}")
+    st.session_state.last_topic = canonical_topic
+    logger.info(f"Topic changed to: {canonical_topic}")
 
 # Setup Tabs
 tab_explain, tab_example, tab_quiz, tab_chat, tab_student = st.tabs([
