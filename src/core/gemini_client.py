@@ -1,6 +1,5 @@
-import os
-import google.generativeai as genai
-from google.api_core import exceptions
+from google import genai
+from google.genai import types, errors
 from src.config import config
 from src.core.persona import AIPersona
 from src.logger import logger
@@ -20,19 +19,18 @@ class GeminiClient:
             api_key: Optional API key. If not provided, falls back to config or environment.
         """
         self._api_key = api_key or config.gemini_api_key
-        self._configured = False
+        self._client = None
         
         if self._api_key:
-            self._configure_api(self._api_key)
+            self._configure_client(self._api_key)
 
-    def _configure_api(self, api_key: str):
-        """Configures the google-generativeai package with the API key."""
+    def _configure_client(self, api_key: str):
+        """Configures the google-genai client with the API key."""
         try:
-            genai.configure(api_key=api_key)
-            self._configured = True
+            self._client = genai.Client(api_key=api_key)
             logger.info("Gemini API successfully configured.")
         except Exception as e:
-            self._configured = False
+            self._client = None
             logger.error(f"Failed to configure Gemini API: {str(e)}")
             raise GeminiClientError(f"Configuration failed: {str(e)}")
 
@@ -57,9 +55,9 @@ class GeminiClient:
             logger.error("Attempted to generate content without an API key.")
             raise GeminiClientError("Gemini API key is not configured. Please add it in your .env file or input it in the sidebar.")
         
-        # If API key changed or not yet configured, configure it now
-        if api_key_override or not self._configured:
-            self._configure_api(active_key)
+        # If API key changed or the client is not yet configured, configure it now
+        if api_key_override or self._client is None:
+            self._configure_client(active_key)
             if api_key_override:
                 self._api_key = active_key
 
@@ -67,25 +65,20 @@ class GeminiClient:
         logger.debug(f"Calling Gemini model '{model_name}' with prompt length {len(prompt)}")
         
         # Set up generation config
-        generation_config = {
-            "temperature": 0.7,
-            "top_p": 0.95,
-            "max_output_tokens": 2048,
-        }
-
-        # Build model arguments
-        model_kwargs = {
-            "model_name": model_name,
-            "generation_config": generation_config,
-        }
-        
-        # Inject system instructions if provided, otherwise default to persona guidelines
         sys_instruction = system_instruction or AIPersona.SYSTEM_INSTRUCTION
-        model_kwargs["system_instruction"] = sys_instruction
+        generation_config = types.GenerateContentConfig(
+            temperature=0.7,
+            top_p=0.95,
+            max_output_tokens=2048,
+            system_instruction=sys_instruction,
+        )
 
         try:
-            model = genai.GenerativeModel(**model_kwargs)
-            response = model.generate_content(prompt)
+            response = self._client.models.generate_content(
+                model=model_name,
+                contents=prompt,
+                config=generation_config,
+            )
             
             if not response.text:
                 logger.warning("Empty response received from Gemini API.")
@@ -94,18 +87,18 @@ class GeminiClient:
             logger.debug("Successfully received response from Gemini API.")
             return response.text.strip()
             
-        except exceptions.InvalidArgument as e:
-            logger.error(f"Invalid argument to Gemini API: {str(e)}")
-            raise GeminiClientError(f"Invalid API request: {str(e)}")
-        except exceptions.ResourceExhausted as e:
-            logger.error(f"Gemini API rate limit exceeded: {str(e)}")
-            raise GeminiClientError("Rate limit exceeded. Please wait a few moments before trying again.")
-        except exceptions.PermissionDenied as e:
-            logger.error(f"Gemini API permission denied: {str(e)}")
-            raise GeminiClientError("Authentication failed. Please verify your Gemini API key is correct.")
-        except exceptions.GoogleAPICallError as e:
-            logger.error(f"General Gemini API call error: {str(e)}")
+        except errors.ClientError as e:
+            logger.error(f"Gemini API client error (code {e.code}): {str(e)}")
+            if e.code == 400:
+                raise GeminiClientError(f"Invalid API request: {str(e)}")
+            if e.code == 429:
+                raise GeminiClientError("Rate limit exceeded. Please wait a few moments before trying again.")
+            if e.code in (401, 403):
+                raise GeminiClientError("Authentication failed. Please verify your Gemini API key is correct.")
             raise GeminiClientError(f"Gemini API Error: {str(e)}")
+        except errors.ServerError as e:
+            logger.error(f"Gemini API server error: {str(e)}")
+            raise GeminiClientError("The Gemini API is temporarily unavailable. Please try again shortly.")
         except Exception as e:
             logger.error(f"Unexpected error in Gemini client: {str(e)}")
             raise GeminiClientError(f"An unexpected error occurred: {str(e)}")

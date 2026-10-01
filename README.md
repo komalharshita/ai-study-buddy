@@ -36,7 +36,7 @@ graph TD
 ```
 
 *   **UI/UX:** Streamlit (injected with custom glassmorphism styling and responsive viewport parameters).
-*   **AI Engine:** Google Gemini SDK (`google-generativeai`).
+*   **AI Engine:** Google Gemini SDK (`google-genai`).
 *   **DevOps:** Docker, Docker Compose.
 *   **Local Tunneling:** `pyngrok` (for Google Colab deployments).
 *   **Testing:** `pytest` + `pytest-mock`.

@@ -90,7 +90,7 @@ If you are running the app on Google Colab (which runs on a remote cloud server)
 ### Step-by-Step Instructions
 1. Open Google Colab and upload or import the notebook: `notebooks/AI_Learning_Buddy_Colab.ipynb`.
 2. Follow the instructions in the notebook cells:
-   * **Step 1:** Install dependencies (`streamlit`, `pyngrok`, `google-generativeai`).
+   * **Step 1:** Install dependencies (`streamlit`, `pyngrok`, `google-genai`).
    * **Step 2:** Clone this repository.
    * **Step 3:** Fill in your API Keys inside the `.env` generation cell.
    * **Step 4:** Launch Streamlit in the background (`!nohup streamlit run app.py &`).

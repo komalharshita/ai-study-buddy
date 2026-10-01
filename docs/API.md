@@ -5,13 +5,13 @@ This document details how the **AI Learning Buddy** integrates with the Google G
 ---
 
 ## 1. Google Gemini SDK Integration
-The project uses the official Google Generative AI Python SDK (`google-generativeai`).
+The project uses the official Google GenAI Python SDK (`google-genai`).
 
 ### Configuration
 The client configuration is initialized in `src/core/gemini_client.py`:
 ```python
-import google.generativeai as genai
-genai.configure(api_key=api_key)
+from google import genai
+client = genai.Client(api_key=api_key)
 ```
 
 ---
